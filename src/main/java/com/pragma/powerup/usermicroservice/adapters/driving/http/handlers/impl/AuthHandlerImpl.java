@@ -1,6 +1,5 @@
 package com.pragma.powerup.usermicroservice.adapters.driving.http.handlers.impl;
 
-import com.pragma.powerup.usermicroservice.adapters.driven.jpa.mysql.adapter.FeignClientAuth;
 import com.pragma.powerup.usermicroservice.adapters.driving.http.dto.request.LoginRequestDto;
 import com.pragma.powerup.usermicroservice.adapters.driving.http.dto.response.JwtResponseDto;
 import com.pragma.powerup.usermicroservice.adapters.driving.http.handlers.IAuthHandler;
@@ -21,7 +20,6 @@ public class AuthHandlerImpl implements IAuthHandler {
 
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
-    private final FeignClientAuth feignClientAuth;
 
     @Override
     public JwtResponseDto login(LoginRequestDto loginRequestDto) {
@@ -33,8 +31,7 @@ public class AuthHandlerImpl implements IAuthHandler {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         String authorizationHeader = "Bearer " + jwt;
-        String response = feignClientAuth.getUserAuth(authorizationHeader);
-
+        System.out.println("Token generado: " + jwt);
         return new JwtResponseDto(jwt);
     }
 
@@ -43,7 +40,6 @@ public class AuthHandlerImpl implements IAuthHandler {
         String token = jwtProvider.refreshToken(jwtResponseDto);
 
         String authorizationHeader = "Bearer " + token;
-        String response = feignClientAuth.getUserAuth(authorizationHeader);
 
         return new JwtResponseDto(token);
     }
