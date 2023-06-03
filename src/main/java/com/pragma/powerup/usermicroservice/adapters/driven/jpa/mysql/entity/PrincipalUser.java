@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 
 public class PrincipalUser implements UserDetails {
     private String nombre;
-    private String nombreUsuario;
+    private Long nombreUsuario;
     private String email;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public PrincipalUser(String nombre, String nombreUsuario, String email, String password,
+    public PrincipalUser(String nombre, Long nombreUsuario, String email, String password,
                          Collection<? extends GrantedAuthority> authorities) {
         this.nombre = nombre;
         this.nombreUsuario = nombreUsuario;
@@ -43,7 +43,7 @@ public class PrincipalUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return nombreUsuario;
+        return String.valueOf(nombreUsuario);
     }
 
     @Override

@@ -48,8 +48,9 @@ public class UserMysqlAdapter implements IUserPersistencePort {
         personRepository.save(personEntityMapper.toEntity(user));
     }
 
+
     @Override
-    public User getUserByDni(String dniNumber) {
+    public User getUserByDni(String dniNumber){
         UserEntity userEntity = personRepository.findByDniNumber(dniNumber).orElseThrow();
         return personEntityMapper.toUser(userEntity);
     }

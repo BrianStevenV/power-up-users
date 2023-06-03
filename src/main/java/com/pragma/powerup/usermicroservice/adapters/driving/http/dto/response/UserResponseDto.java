@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 public class UserResponseDto {
+    private Long id;
     private String dniNumber;
     private String name;
     private String surname;

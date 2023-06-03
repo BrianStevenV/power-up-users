@@ -45,7 +45,7 @@ public class JwtProvider {
 //        claims.put("idUser", nombre);
         return Jwts.builder()
 //                .setSubject(usuarioPrincipal.getUsername())se cambio por el de abajo
-                .setSubject(usuarioPrincipal.getEmail())
+                .setSubject(String.valueOf(usuarioPrincipal.getUsername()))
                 .claim("roles", roles)
 //                .addClaims(claims)
                 .setIssuedAt(new Date())

@@ -33,6 +33,7 @@ public class UserUseCase implements IUserServicePort {
             userPersistencePort.saveUser(user);
         }
     }
+    //TODO: pasar a constantes
 
     @Override
     public User getUserByDni(String dniNumber) {

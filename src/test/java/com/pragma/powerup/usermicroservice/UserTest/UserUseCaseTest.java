@@ -11,15 +11,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+
 
 import java.time.LocalDate;
 
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
-//Hay que especificar que clase voy a testear.
-//@ContextConfiguration(classes = UserUseCase.class)
-//@SpringBootTest//decimos que es clase de pruebas
+
+
+@TestPropertySource(locations = "classpath:application-dev.yml")
+@SpringBootTest//decimos que es clase de pruebas
 public class UserUseCaseTest {
 
     @Mock
@@ -50,6 +53,7 @@ public class UserUseCaseTest {
 
         verify(userPersistencePort).saveUser(user);
     }
+
 
     @Test
     public void saveUserOwnerWithInvalidAgeException() {
