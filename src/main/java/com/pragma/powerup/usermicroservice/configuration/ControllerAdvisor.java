@@ -10,6 +10,8 @@ import com.pragma.powerup.usermicroservice.adapters.driven.jpa.mysql.exceptions.
 import com.pragma.powerup.usermicroservice.adapters.driven.jpa.mysql.exceptions.UserNotFoundException;
 import com.pragma.powerup.usermicroservice.adapters.driving.http.exceptions.MissingBirthdateValidationException;
 import com.pragma.powerup.usermicroservice.domain.exceptions.AgeNotValidException;
+import com.pragma.powerup.usermicroservice.domain.exceptions.UnauthorizedAccessException;
+import com.pragma.powerup.usermicroservice.domain.model.ConstantsUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -108,7 +110,18 @@ public class ControllerAdvisor {
                 .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE_KEY, ROLE_NOT_FOUND_MESSAGE));
     }
 
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<Map<String, String>> handleUnauthorizedAccessException(UnauthorizedAccessException unauthorizedAccessException){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Collections.singletonMap(ConstantsUseCase.RESPOSNE_ERROR_MESSAGE_KEY, ConstantsUseCase.UNAUTHORIZED_ACCESS_EXCEPTION));
+    }
 
+
+    @ExceptionHandler(AgeNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleAgeNotValidationException(AgeNotValidException ageNotValidException){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Collections.singletonMap(ConstantsUseCase.RESPOSNE_ERROR_MESSAGE_KEY, ConstantsUseCase.AGE_NOT_VALID_PROVIDER));
+    }
     //Created by me.
 
 
@@ -120,12 +133,7 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler(AgeNotValidException.class)
-    public ResponseEntity<Map<String, String>> ageNotValidationException(AgeNotValidException ex){
-        Map<String, String> response = new HashMap<>();
-        response.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
+
 
 
 }

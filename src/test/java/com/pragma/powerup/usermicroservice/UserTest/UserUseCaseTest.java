@@ -1,11 +1,14 @@
 package com.pragma.powerup.usermicroservice.UserTest;
 
-import com.pragma.powerup.usermicroservice.adapters.driving.http.exceptions.MissingBirthdateValidationException;
+
+import com.pragma.powerup.usermicroservice.domain.api.IAuthenticationUserInfoServicePort;
 import com.pragma.powerup.usermicroservice.domain.exceptions.AgeNotValidException;
-import com.pragma.powerup.usermicroservice.domain.model.Role;
+import com.pragma.powerup.usermicroservice.domain.exceptions.UnauthorizedAccessException;
+import com.pragma.powerup.usermicroservice.domain.model.ConstantsUseCase;
 import com.pragma.powerup.usermicroservice.domain.model.User;
 import com.pragma.powerup.usermicroservice.domain.spi.IUserPersistencePort;
 import com.pragma.powerup.usermicroservice.domain.usecase.UserUseCase;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -18,7 +21,10 @@ import java.time.LocalDate;
 
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @TestPropertySource(locations = "classpath:application-dev.yml")
@@ -28,45 +34,98 @@ public class UserUseCaseTest {
     @Mock
     private IUserPersistencePort userPersistencePort;
 
+    @Mock
+    private IAuthenticationUserInfoServicePort authenticationUserInfoServicePort;
+
     private UserUseCase userUseCase;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userUseCase = new UserUseCase(userPersistencePort);
+        userUseCase = new UserUseCase(userPersistencePort, authenticationUserInfoServicePort);
     }
 
     @Test
-    public void saveUserWithValidData() {
-        User user = new User(1L, "12345678A", "John", "Doe", "johndoe@mail.com", "123456789", LocalDate.of(2000, 1, 1), "password", new Role(2L, "Owner", "The owner of a restaurant"));
+    void saveUser_WithValidRoleAndAge_Success() {
+        // Arrange
+        String verifyingRole = ConstantsUseCase.ADMINISTRATOR_ROLE;
+        User user = new User();
+        user.setBirthdate(LocalDate.of(1990, 1, 1));
 
+        // Mocking
+        when(authenticationUserInfoServicePort.getIdentifierUserFromToken()).thenReturn(verifyingRole);
+
+        // Act
         userUseCase.saveUser(user);
 
-        verify(userPersistencePort).saveUser(user);
+        // Assert
+        verify(authenticationUserInfoServicePort, times(1)).getIdentifierUserFromToken();
+        verify(userPersistencePort, times(1)).saveUser(user);
     }
 
     @Test
-    public void saveUserEmployeeWithNullBirthDate(){
-        User user = new User(1L, "12345678A", "John", "Doe", "johndoe@mail.com", "123456789", null, "password", new Role(3L, "Owner", "The Employee of a restaurant"));
+    void saveUser_WithValidRoleAndInvalidAge_ExceptionThrown() {
+        // Arrange
+        String verifyingRole = ConstantsUseCase.PROVIDER_ROLE;
+        User user = new User();
+        user.setBirthdate(LocalDate.of(2005, 1, 1));
 
-        userUseCase.saveUser(user);
+        // Mocking
+        when(authenticationUserInfoServicePort.getIdentifierUserFromToken()).thenReturn(verifyingRole);
 
-        verify(userPersistencePort).saveUser(user);
-    }
-
-
-    @Test
-    public void saveUserOwnerWithInvalidAgeException() {
-        User user = new User(1L, "12345678A", "John", "Doe", "johndoe@mail.com", "123456789", LocalDate.of(2010, 1, 1), "password", new Role(2L, "Owner", "The owner of a restaurant"));
-
+        // Act & Assert
         assertThrows(AgeNotValidException.class, () -> userUseCase.saveUser(user));
+
+        // Verify
+        verify(authenticationUserInfoServicePort, times(1)).getIdentifierUserFromToken();
+        verify(userPersistencePort, never()).saveUser(user);
     }
 
     @Test
-    public void saveUserOwnerWithMissingBirthdateException() {
-        User user = new User(1L, "12345678A", "John", "Doe", "johndoe@mail.com", "123456789", null, "password", new Role(2L, "Owner", "The owner of a restaurant"));
+    void saveUser_UnauthorizedRole_ExceptionThrown() {
+        // Arrange
+        String verifyingRole = "OTHER_ROLE";
+        User user = new User();
+        user.setBirthdate(LocalDate.of(1990, 1, 1));
 
-        assertThrows(MissingBirthdateValidationException.class, () -> userUseCase.saveUser(user));
+        // Mocking
+        when(authenticationUserInfoServicePort.getIdentifierUserFromToken()).thenReturn(verifyingRole);
+
+        // Act & Assert
+        assertThrows(UnauthorizedAccessException.class, () -> userUseCase.saveUser(user));
+
+        // Verify
+        verify(authenticationUserInfoServicePort, times(1)).getIdentifierUserFromToken();
+        verify(userPersistencePort, never()).saveUser(user);
+    }
+
+    @Test
+    void getUserByDni_ExistingDni_Success() {
+        // Arrange
+        String dniNumber = "1234567890";
+        User expectedUser = new User();
+        when(userPersistencePort.getUserByDni(dniNumber)).thenReturn(expectedUser);
+
+        // Act
+        User result = userUseCase.getUserByDni(dniNumber);
+
+        // Assert
+        verify(userPersistencePort, times(1)).getUserByDni(dniNumber);
+        Assertions.assertEquals(expectedUser, result);
+    }
+
+    @Test
+    void getUserByDni_NonExistingDni_ReturnsNull() {
+        // Arrange
+        String dniNumber = "9876543210";
+        when(userPersistencePort.getUserByDni(dniNumber)).thenReturn(null);
+
+        // Act
+        User result = userUseCase.getUserByDni(dniNumber);
+
+        // Assert
+        verify(userPersistencePort, times(1)).getUserByDni(dniNumber);
+        Assertions.assertNull(result);
     }
 
 }

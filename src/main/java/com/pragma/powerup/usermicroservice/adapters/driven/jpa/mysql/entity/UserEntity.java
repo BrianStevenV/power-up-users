@@ -30,7 +30,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true, nullable = false, length = 20)
-    private Long dniNumber;
+    private String dniNumber;
     private String name;
     private String surname;
     private String mail;

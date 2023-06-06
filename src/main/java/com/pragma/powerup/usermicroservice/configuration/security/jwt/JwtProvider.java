@@ -5,6 +5,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.pragma.powerup.usermicroservice.adapters.driven.jpa.mysql.entity.PrincipalUser;
 import com.pragma.powerup.usermicroservice.adapters.driving.http.dto.response.JwtResponseDto;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtProvider {
-    //Metodo para crear token por medio de la autenticacion.
     private final static Logger logger = LoggerFactory.getLogger(JwtProvider.class);
 
     @Value("${jwt.secret}")
@@ -40,14 +40,10 @@ public class JwtProvider {
     public String generateToken(Authentication authentication) {
         PrincipalUser usuarioPrincipal = (PrincipalUser) authentication.getPrincipal();
         List<String> roles = usuarioPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-//        Map<String, Object> claims = new HashMap<>();
-//        claims.put("roles", roles);
-//        claims.put("idUser", nombre);
         return Jwts.builder()
-//                .setSubject(usuarioPrincipal.getUsername())se cambio por el de abajo
-                .setSubject(String.valueOf(usuarioPrincipal.getUsername()))
+                .setSubject(usuarioPrincipal.getEmail())
                 .claim("roles", roles)
-//                .addClaims(claims)
+                .claim("dni",usuarioPrincipal.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + expiration * 180))
                 .signWith(SignatureAlgorithm.HS256, secret.getBytes())
@@ -56,6 +52,13 @@ public class JwtProvider {
 
     public String getNombreUsuarioFromToken(String token) {
         return Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String extractRoleFromToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
+        List<String> roles = (List<String>) claims.get("roles");
+        String role = roles.get(0); // Obtener el primer elemento del array
+        return role;
     }
 
     public boolean validateToken(String token) {
@@ -96,5 +99,6 @@ public class JwtProvider {
         }
         return null;
     }
+    //TODO: VERIFICAR QUE ANADIR DNI AL CLAIM NO DANE EL REFRESH TOKEN.
 
 }

@@ -42,29 +42,12 @@ public class MainSecurity {
             AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.cors().and().csrf().disable()
-//                .authorizeRequests(requests -> requests
-//                        .requestMatchers("/auth/login", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/health").permitAll()
-//                        .requestMatchers("/user").hasRole("ADMIN")
-//                        .anyRequest().authenticated()
-//                )
-//                .formLogin().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .exceptionHandling().authenticationEntryPoint(jwtEntryPoint);
-//        http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
-//    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests(requests -> requests
-//                        .requestMatchers(HttpMethod.GET, "/user/**").permitAll()
-                        .requestMatchers("/auth/login", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/health", "/user/**").permitAll()
+                        .requestMatchers("/auth/login", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/health", "/user/registerClient/").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/register/").hasAnyAuthority("ADMINISTRATOR_ROLE", "PROVIDER_ROLE")
                         .anyRequest().authenticated()
                 )
                 .formLogin().disable()
