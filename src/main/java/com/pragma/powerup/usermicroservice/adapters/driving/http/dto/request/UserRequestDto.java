@@ -2,8 +2,10 @@ package com.pragma.powerup.usermicroservice.adapters.driving.http.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +35,16 @@ public class UserRequestDto {
     private LocalDate birthdate;
     @NotBlank
     private String password;
+    @NotNull
     private RoleRequestDTO idRole;
+
+    @AssertTrue(message = "role IDs are: 1, 2, 3, 4")
+    private boolean isValidRoleId() {
+        if (idRole != null) {
+            Long roleId = idRole.getId();
+            return roleId == 1L || roleId == 2L || roleId == 3L || roleId == 4L;
+        }
+        return true;
+    }
 
 }
