@@ -15,25 +15,6 @@ public class UserMysqlAdapter implements IUserPersistencePort {
     private final IUserRepository personRepository;
     private final IUserEntityMapper personEntityMapper;
     private final PasswordEncoder passwordEncoder;
-//    @Override
-//    public void saveUser(User user) {
-//        if (personRepository.findByDniNumber(user.getDniNumber()).isPresent()) {
-//            throw new PersonAlreadyExistsException();
-//        }
-//
-//        if (personRepository.existsByMail(user.getMail())){
-//            throw new MailAlreadyExistsException();
-//        }
-//
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        personRepository.save(personEntityMapper.toEntity(user));
-//    }
-//
-//    @Override
-//    public User getUserByDni(String dniNumber) {
-//        UserEntity userEntity = personRepository.findByDniNumber(dniNumber).orElseThrow();
-//        return personEntityMapper.toUser(userEntity);
-//    }
     @Override
     public void saveUser(User user) {
         if (personRepository.findByMail(user.getMail()).isPresent()) {
