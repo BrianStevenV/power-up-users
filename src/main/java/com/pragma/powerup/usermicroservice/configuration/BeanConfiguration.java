@@ -31,14 +31,17 @@ public class BeanConfiguration {
     public IRoleServicePort roleServicePort() {
         return new RoleUseCase(rolePersistencePort());
     }
+
     @Bean
     public IRolePersistencePort rolePersistencePort() {
         return new RoleMysqlAdapter(roleRepository, roleEntityMapper);
     }
+
     @Bean
     public IUserPersistencePort userPersistencePort() {
         return new UserMysqlAdapter(userRepository, userEntityMapper, passwordEncoder);
     }
+
     @Bean
     public IUserServicePort userServicePort() {
         return new UserUseCase(userPersistencePort(), authenticationUserInfoServicePort);
