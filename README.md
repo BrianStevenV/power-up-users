@@ -64,6 +64,7 @@ To get a local copy up and running follow these steps.
 
 This microservice manages all the user information, in this microservice we can create four types of users: Administrator, Owner, Employee and Customer. We also find the Login endpoint so that the user can log in and obtain the access credentials according to his role which will allow him to use them in the application.
 Example of auth request:
+ENDPOINT: /auth/login/
 ```JSON
 {
   "email": "provider3@gmail.com",
@@ -85,6 +86,7 @@ For the creation of users there are some requirements:
 - 
 
 Example of the request: 
+ENDPOINT: /user/register/
 ```JSON
 {
   "dniNumber": "0969",
@@ -108,6 +110,7 @@ Example of the request:
 ```
 We can also find a second endpoint which is specific for the creation of client type users, this endpoint does not need any prior authorization to be used:
 Example request:
+ENDPOINT: /user/registerClient/
 ```JSON
 {
   "dniNumber": "0161",
@@ -130,7 +133,9 @@ Example request:
 }
 ```
 We find a GET endpoint which allows us to get the user by entering its id:
+ENDPOINT: /user/{dniNumber}
 ```JSON
 104
 ```
 Finally, we have an endpoint that obtains the roles found in the application.
+ENDPOINT: /role
