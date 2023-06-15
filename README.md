@@ -69,15 +69,23 @@ Example of auth request:
   "email": "provider3@gmail.com",
   "password": "string"
 }
+```
+
 Response: 
+
+```JSON
 {
   "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcm92aWRlcjNAZ21haWwwuY29tIiwicm9sZXMiOlsiUFJPJVklERVJfUk9MRSJdLCJkbmkiOiIyNzI5MyIsImlkIjo5MCwiaWF0IjoxNjg2ODQwODMwLCJleHAiOjE2ODc0ODg4MzB9. f-0fZsLpEpqlDyxnv5ugLaqW8aCZDYVxKKDKK3E_ZZu0."
 }
+```
 
 For the creation of users there are some requirements:
 - To create an Owner type user it is necessary that an Administrator type user is logged in at the time of creation, if the user is different or is not logged in he/she will not be able to make the creation.
 - To create a user type Employee you need to be logged in as Owner, if the user is different you will not be able to make the creation.
+- 
+
 Example of the request: 
+```JSON
 {
   "dniNumber": "0969",
   "name": "example",
@@ -90,10 +98,14 @@ Example of the request:
     "id": 2
   }
 }
-}, "response":
+```
+
+"response":
+```JSON
 {
   "message": "Person created successfully"
 }
+```
 We can also find a second endpoint which is specific for the creation of client type users, this endpoint does not need any prior authorization to be used:
 Example request:
 ```JSON
@@ -109,12 +121,16 @@ Example request:
     "id": 1
   }
 }
+```
 
-
-}, "response":
+"response":
+```JSON
 {
   "message": "Person created successfully"
 }
+```
 We find a GET endpoint which allows us to get the user by entering its id:
+```JSON
 104
+```
 Finally, we have an endpoint that obtains the roles found in the application.
