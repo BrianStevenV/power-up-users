@@ -59,3 +59,62 @@ To get a local copy up and running follow these steps.
 ## Tests
 
 - Right-click the test folder and choose Run tests with coverage
+
+## User Microservice
+
+This microservice manages all the user information, in this microservice we can create four types of users: Administrator, Owner, Employee and Customer. We also find the Login endpoint so that the user can log in and obtain the access credentials according to his role which will allow him to use them in the application.
+Example of auth request:
+```JSON
+{
+  "email": "provider3@gmail.com",
+  "password": "string"
+}
+Response: 
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcm92aWRlcjNAZ21haWwwuY29tIiwicm9sZXMiOlsiUFJPJVklERVJfUk9MRSJdLCJkbmkiOiIyNzI5MyIsImlkIjo5MCwiaWF0IjoxNjg2ODQwODMwLCJleHAiOjE2ODc0ODg4MzB9. f-0fZsLpEpqlDyxnv5ugLaqW8aCZDYVxKKDKK3E_ZZu0."
+}
+
+For the creation of users there are some requirements:
+- To create an Owner type user it is necessary that an Administrator type user is logged in at the time of creation, if the user is different or is not logged in he/she will not be able to make the creation.
+- To create a user type Employee you need to be logged in as Owner, if the user is different you will not be able to make the creation.
+Example of the request: 
+{
+  "dniNumber": "0969",
+  "name": "example",
+  "surname": "example",
+  "mail": "example@gmail.com",
+  "phone": "3192621119",
+  "birthdate": "2002-06-15",
+  "password": "string",
+  "idRole": {
+    "id": 2
+  }
+}
+}, "response":
+{
+  "message": "Person created successfully"
+}
+We can also find a second endpoint which is specific for the creation of client type users, this endpoint does not need any prior authorization to be used:
+Example request:
+```JSON
+{
+  "dniNumber": "0161",
+  "name": "example",
+  "surname": "example",
+  "mail": "example@gmail.com",
+  "phone": "3192621119",
+  "birthdate": "2002-06-15",
+  "password": "string",
+  "idRole": {
+    "id": 1
+  }
+}
+
+
+}, "response":
+{
+  "message": "Person created successfully"
+}
+We find a GET endpoint which allows us to get the user by entering its id:
+104
+Finally, we have an endpoint that obtains the roles found in the application.
