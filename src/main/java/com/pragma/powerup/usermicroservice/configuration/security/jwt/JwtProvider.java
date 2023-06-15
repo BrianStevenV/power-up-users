@@ -44,6 +44,7 @@ public class JwtProvider {
                 .setSubject(usuarioPrincipal.getEmail())
                 .claim("roles", roles)
                 .claim("dni",usuarioPrincipal.getUsername())
+                .claim("id",usuarioPrincipal.getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + expiration * 180))
                 .signWith(SignatureAlgorithm.HS256, secret.getBytes())
@@ -57,7 +58,7 @@ public class JwtProvider {
     public String extractRoleFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
         List<String> roles = (List<String>) claims.get("roles");
-        String role = roles.get(0); // Obtener el primer elemento del array
+        String role = roles.get(0);
         return role;
     }
 
@@ -87,7 +88,6 @@ public class JwtProvider {
             JWTClaimsSet claims = jwt.getJWTClaimsSet();
             String nombreUsuario = claims.getSubject();
             List<String> roles = claims.getStringListClaim("roles");
-            //List<String> roles = (List<String>) claims.getClaim("roles");
 
             return Jwts.builder()
                     .setSubject(nombreUsuario)
@@ -99,6 +99,5 @@ public class JwtProvider {
         }
         return null;
     }
-    //TODO: VERIFICAR QUE ANADIR DNI AL CLAIM NO DANE EL REFRESH TOKEN.
 
 }

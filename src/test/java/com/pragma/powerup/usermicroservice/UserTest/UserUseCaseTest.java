@@ -51,6 +51,7 @@ public class UserUseCaseTest {
     @Test
     void saveUser_WithValidRoleAndAge_Success() {
         // Arrange
+
         String verifyingRole = ConstantsUseCase.ADMINISTRATOR_ROLE;
         User user = new User();
         Role role = new Role(3L, "PROVIDER_ROLE", "PROVIDER_ROLE");
@@ -58,12 +59,15 @@ public class UserUseCaseTest {
         user.setIdRole(role);
 
         // Mocking
+
         when(authenticationUserInfoServicePort.getIdentifierUserFromToken()).thenReturn(verifyingRole);
 
         // Act
+
         userUseCase.saveUser(user);
 
         // Assert
+
         verify(authenticationUserInfoServicePort, times(1)).getIdentifierUserFromToken();
         verify(userPersistencePort, times(1)).saveUser(user);
     }
@@ -71,14 +75,17 @@ public class UserUseCaseTest {
     @Test
     void getUserByDniSuccess() {
         // Arrange
+
         String dniNumber = "1234567890";
         User expectedUser = new User();
         when(userPersistencePort.getUserByDni(dniNumber)).thenReturn(expectedUser);
 
         // Act
+
         User result = userUseCase.getUserByDni(dniNumber);
 
         // Assert
+
         verify(userPersistencePort, times(1)).getUserByDni(dniNumber);
         Assertions.assertEquals(expectedUser, result);
     }
@@ -86,13 +93,16 @@ public class UserUseCaseTest {
     @Test
     void getUserByDniReturnsNull() {
         // Arrange
+
         String dniNumber = "9876543210";
         when(userPersistencePort.getUserByDni(dniNumber)).thenReturn(null);
 
         // Act
+
         User result = userUseCase.getUserByDni(dniNumber);
 
         // Assert
+
         verify(userPersistencePort, times(1)).getUserByDni(dniNumber);
         Assertions.assertNull(result);
     }
@@ -100,14 +110,17 @@ public class UserUseCaseTest {
     @Test
     void saveUser_UnauthorizedAccessThrowsException() {
         // Arrange
+
         String verifyingRole = ConstantsUseCase.PROVIDER_ROLE;
         Role role = new Role(3L, "PROVIDER_ROLE", "PROVIDER_ROLE");
         User user = new User(5L,"5060","Test","Test","test@gmail.com","3192621109",LocalDate.of(1990, 1, 1),"string", role);
 
         // Act
+
         when(authenticationUserInfoServicePort.getIdentifierUserFromToken()).thenReturn(verifyingRole);
 
         // Assert
+
         Assertions.assertThrows(UnauthorizedAccessException.class, () -> {
             userUseCase.saveUser(user);
         });
@@ -116,14 +129,17 @@ public class UserUseCaseTest {
     @Test
     void saveUser_InvalidUserRoleThrowsException() {
         // Arrange
+
         String verifyingRole = ConstantsUseCase.ADMINISTRATOR_ROLE;
         User user = new User();
         user.setIdRole(new Role(5L, "INVALID_ROLE", "INVALID_ROLE"));
 
         // Act
+
         when(authenticationUserInfoServicePort.getIdentifierUserFromToken()).thenReturn(verifyingRole);
 
         // Assert
+
         Assertions.assertThrows(UnauthorizedAccessException.class, () -> {
             userUseCase.saveUser(user);
         });
@@ -132,6 +148,7 @@ public class UserUseCaseTest {
     @Test
     void saveUser_ValidationFailedThrowsException() {
         // Arrange
+
         String verifyingRole = ConstantsUseCase.ADMINISTRATOR_ROLE;
         Role role = new Role(3L, "PROVIDER_ROLE", "PROVIDER_ROLE");
         User user = new User(5L,"5060","Test","Test","test@gmail.com","3192621109",LocalDate.of(2020, 1, 1),"string", role);
@@ -139,67 +156,81 @@ public class UserUseCaseTest {
         user.setBirthdate(LocalDate.of(2020, 1, 1)); // Invalid birthdate for provider role
 
         // Act
+
         when(authenticationUserInfoServicePort.getIdentifierUserFromToken()).thenReturn(verifyingRole);
 
         // Assert
+
         Assertions.assertThrows(AgeNotValidException.class, () -> {
             userUseCase.saveUser(user);
         });
     }
 
-    // Cobertura de test a las clases que componen factoria sin ningun metodo.
+
     @Test
     void validateEmployeeRole_ValidRole_Success() {
         // Arrange
+
         EmployeeRoleValidator validator = new EmployeeRoleValidator();
         User user = new User();
         user.setIdRole(new Role(3L, "PROVIDER_ROLE", "PROVIDER_ROLE"));
 
         // Act
+
         Executable action = () -> validator.validate(user);
 
         // Assert
+
         assertDoesNotThrow(action);
     }
 
     @Test
     void validateClientRole_ValidRole_Success() {
         // Arrange
+
         ClientRoleValidator validator = new ClientRoleValidator();
         User user = new User();
         user.setIdRole(new Role(1L, "CLIENT_ROLE", "CLIENT_ROLE"));
 
         // Act
+
         Executable action = () -> validator.validate(user);
 
         // Assert
+
         assertDoesNotThrow(action);
     }
 
     @Test
     void validateClientRole_InvalidRole_Success() {
         // Arrange
+
         ClientRoleValidator validator = new ClientRoleValidator();
         User user = new User();
         user.setIdRole(new Role(5L, "INVALID_ROLE", "INVALID_ROLE"));
 
         // Act
+
         Executable action = () -> validator.validate(user);
 
         // Assert
+
         assertDoesNotThrow(action);
     }
 
     @Test
     void validateAdministratorRole_EmptyMethod_NoExceptionThrown() {
         // Arrange
+
         AdministratorRoleValidator validator = new AdministratorRoleValidator();
         User user = new User();
 
         // Act
+
         Executable action = () -> validator.validate(user);
 
         // Assert
+
         assertDoesNotThrow(action);
     }
 

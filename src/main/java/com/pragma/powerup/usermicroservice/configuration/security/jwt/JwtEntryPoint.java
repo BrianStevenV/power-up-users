@@ -12,7 +12,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
-//Class to managament the type exception authentication
+
 @Component
 public class JwtEntryPoint implements AuthenticationEntryPoint {
 

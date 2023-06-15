@@ -24,8 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class JwtTokenFilter extends OncePerRequestFilter implements IAuthenticationUserInfoServicePort {
-
-    private static final Logger logger = LoggerFactory.getLogger(JwtTokenFilter.class);
     @Autowired
     JwtProvider jwtProvider;
 
@@ -38,10 +36,8 @@ public class JwtTokenFilter extends OncePerRequestFilter implements IAuthenticat
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
             throws ServletException, IOException {
-        logger.debug("Iniciando JwtAuthenticationFilter");
         String token = getToken(req);
         if (token != null && jwtProvider.validateToken(token)) {
-            logger.debug("Dentro del if");
             String nombreUsuario = jwtProvider.getNombreUsuarioFromToken(token);
             String getRole = jwtProvider.extractRoleFromToken(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(nombreUsuario);
