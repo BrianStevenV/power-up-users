@@ -37,6 +37,7 @@ public class UserUseCase implements IUserServicePort {
         userPersistencePort.saveUser(user);
     }
 
+    //creation user's
     private boolean authorizationCreateUser(String verifyingRole, Long userRoleId) {
         if (userRoleId.equals(ConstantsUseCase.ID_PROVIDER_REQUESTDTO)) {
             return ConstantsUseCase.ADMINISTRATOR_ROLE.equals(verifyingRole);
