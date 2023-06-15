@@ -65,7 +65,7 @@ public class RoleUseCaseTest {
         List<Role> result = roleUseCase.getAllRoles();
 
         // Assert
-        
+
         verify(rolePersistencePort, times(1)).getAllRoles();
         Assertions.assertTrue(result.isEmpty());
     }
