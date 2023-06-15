@@ -35,6 +35,7 @@ public class RoleUseCaseTest {
     @Test
     void getAllRoles_ReturnsListOfRoles() {
         // Arrange
+
         List<Role> expectedRoles = Arrays.asList(
                 new Role(1L, "ADMIN_ROLE", "ADMIN_ROLE"),
                 new Role(2L, "PROVIDER_ROLE", "PROVIDER_ROLE"),
@@ -44,9 +45,11 @@ public class RoleUseCaseTest {
         when(rolePersistencePort.getAllRoles()).thenReturn(expectedRoles);
 
         // Act
+
         List<Role> result = roleUseCase.getAllRoles();
 
         // Assert
+
         verify(rolePersistencePort, times(1)).getAllRoles();
         Assertions.assertEquals(expectedRoles, result);
     }
@@ -54,12 +57,15 @@ public class RoleUseCaseTest {
     @Test
     void getAllRoles_ReturnsEmptyList() {
         // Arrange
+
         when(rolePersistencePort.getAllRoles()).thenReturn(Collections.emptyList());
 
         // Act
+
         List<Role> result = roleUseCase.getAllRoles();
 
         // Assert
+        
         verify(rolePersistencePort, times(1)).getAllRoles();
         Assertions.assertTrue(result.isEmpty());
     }
