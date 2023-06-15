@@ -135,7 +135,7 @@ ENDPOINT: /user/registerClient/
 We find a GET endpoint which allows us to get the user by entering its id:
 ENDPOINT: /user/{dniNumber}
 ```JSON
-104
+[YOU SHOULD INPUT NUMBER DOCUMENT]
 ```
 Finally, we have an endpoint that obtains the roles found in the application.
 ENDPOINT: /role
